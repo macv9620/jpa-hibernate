@@ -12,6 +12,9 @@ public class Categoria {
 
     private String name;
 
+    public Categoria() {
+    }
+
     public Categoria(String name) {
         this.name = name;
     }
