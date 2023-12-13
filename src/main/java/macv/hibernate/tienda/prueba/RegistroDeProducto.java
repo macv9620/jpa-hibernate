@@ -1,23 +1,37 @@
 package macv.hibernate.tienda.prueba;
 
+import macv.hibernate.tienda.dao.CategoriaDao;
+import macv.hibernate.tienda.dao.ProductoDao;
+import macv.hibernate.tienda.modelo.Categoria;
 import macv.hibernate.tienda.modelo.Producto;
+import macv.hibernate.tienda.utils.JpaUtils;
 
 import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
 import java.math.BigDecimal;
 
 public class RegistroDeProducto {
     public static void main(String[] args) {
-        Producto celular = new Producto();
-        celular.setNombre("Galaxy");
-        celular.setDescripcion("Usado");
-        celular.setPrecio(new BigDecimal("4500"));
+        Categoria celulares = new Categoria("CELULARES");
 
-        EntityManagerFactory factory = Persistence.createEntityManagerFactory("tienda");
+        Producto celular = new Producto(
+                "Galaxy",
+                "Usado",
+                new BigDecimal("4500"),
+                celulares);
 
-        EntityManager em = factory.createEntityManager();
+        EntityManager em = JpaUtils.getEntityManager();
 
-        em.persist(celular);
+        ProductoDao productoDao = new ProductoDao(em);
+        CategoriaDao categoriaDao = new CategoriaDao(em);
+
+        em.getTransaction().begin();
+
+
+        categoriaDao.guardar(celulares);
+        productoDao.guardar(celular);
+
+
+        em.getTransaction().commit();
+        em.close();
     }
 }
