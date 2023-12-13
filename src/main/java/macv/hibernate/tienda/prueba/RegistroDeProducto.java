@@ -1,31 +1,45 @@
 package macv.hibernate.tienda.prueba;
 
 import macv.hibernate.tienda.dao.CategoriaDao;
+import macv.hibernate.tienda.dao.ProductoDao;
 import macv.hibernate.tienda.modelo.Categoria;
+import macv.hibernate.tienda.modelo.Producto;
 import macv.hibernate.tienda.utils.JpaUtils;
 import javax.persistence.EntityManager;
-
+import java.math.BigDecimal;
+import java.util.List;
 
 public class RegistroDeProducto {
     public static void main(String[] args) {
+        registrarProducto();
+        EntityManager em = JpaUtils.getEntityManager();
+        ProductoDao productoDao = new ProductoDao(em);
+
+        BigDecimal producto = productoDao.consultarPrecioPorNombreDeProducto("Galaxy");
+
+        System.out.println(producto);
+
+    }
+
+    private static void registrarProducto() {
         Categoria celulares = new Categoria("CELULARES");
 
-        EntityManager em = JpaUtils.getEntityManager();
+        Producto celular = new Producto(
+                "Galaxy",
+                "Usado",
+                new BigDecimal("4500"),
+                celulares);
 
+        EntityManager em = JpaUtils.getEntityManager();
+        ProductoDao productoDao = new ProductoDao(em);
         CategoriaDao categoriaDao = new CategoriaDao(em);
 
         em.getTransaction().begin();
 
         categoriaDao.guardar(celulares);
+        productoDao.guardar(celular);
 
-        celulares.setName("LIBROS");
-
-        em.flush();
-        em.clear();
-
-        celulares = em.merge(celulares);
-        celulares.setName("SOFTWARE");
-
-        em.flush();
+        em.getTransaction().commit();
+        em.close();
     }
 }
