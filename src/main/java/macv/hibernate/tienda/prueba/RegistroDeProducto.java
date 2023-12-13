@@ -7,7 +7,6 @@ import macv.hibernate.tienda.modelo.Producto;
 import macv.hibernate.tienda.utils.JpaUtils;
 import javax.persistence.EntityManager;
 import java.math.BigDecimal;
-import java.util.List;
 
 public class RegistroDeProducto {
     public static void main(String[] args) {
